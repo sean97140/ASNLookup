@@ -17,7 +17,11 @@ Example
 Given ip address: 131.252.209.15
 
 Results:
+
 ASN: AS6366
+
 Other ASN(s) for owner: NONE
+
 Owner: PDXNET - Portland State University,US
+
 IP Range(s) 131.252.0.1/16, x.x.x.x/x, .... 

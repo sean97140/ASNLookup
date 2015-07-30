@@ -154,7 +154,10 @@ Public Class Form1
     End Function
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        MsgBox(GetASNumber(TextBox1.Text))
+        Dim ASN As Integer = GetASNumber(TextBox1.Text)
+        Dim Owner As String = ASNToOwner.Item(ASN)
+
+        MsgBox(ASN.ToString + " " + Owner)
     End Sub
 
    

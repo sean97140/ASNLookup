@@ -6,6 +6,7 @@ Public Class Form1
     Dim ipRangeToASN As New Dictionary(Of String, Integer)
     Dim ASNToOwner As New Dictionary(Of Integer, String)
     Dim OwnerToASNs As New Dictionary(Of String, List(Of Integer))
+    Dim ASNToIPRange As New Dictionary(Of Integer, String)
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadASNTables()
     End Sub
@@ -43,6 +44,11 @@ Public Class Form1
             ipRange = TextLine.Split()(0)
             asn = ConvertStringToInt(TextLine.Split()(1))
             ipRangeToASN.Add(ipRange, asn)
+
+            If Not ASNToIPRange.ContainsKey(asn) Then
+                ASNToIPRange.Add(asn, ipRange)
+            End If
+
         Loop
 
         ipRangeDataFileReader.Close()
@@ -161,7 +167,23 @@ Public Class Form1
 
         Dim Owner As String = ASNToOwner.Item(ASN)
 
-        MsgBox(Owner + " with a range of: " + Range + " and an ASN of: " + ASN.ToString)
+        Dim OtherASNsList As List(Of Integer) = OwnerToASNs.Item(Owner)
+
+        
+        Dim OtherAsnRangeString As String = " <"
+
+        For Each i In OtherASNsList
+            If ASNToIPRange.ContainsKey(i) Then
+                OtherAsnRangeString += "> <" + i.ToString + " " + ASNToIPRange.Item(i)
+            Else
+                OtherAsnRangeString += "> <" + i.ToString + " missing range"
+            End If
+
+        Next
+
+        OtherAsnRangeString += ">"
+
+        MsgBox(Owner + " with a range of: " + Range + " and an ASN of: " + ASN.ToString + " with other ASN/Ranges: " + OtherAsnRangeString)
     End Sub
 
    

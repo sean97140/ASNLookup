@@ -106,7 +106,7 @@ Public Class Form1
         End Try
     End Function
 
-    Private Function GetASNumber(ipAddress As String) As Integer
+    Private Function GetASNumber(ipAddress As String) As String
         'http://www.unixwiz.net/techtips/netmask-ref.html
         'http://quaxio.com/bgp/ much credit deserved for finding this method
 
@@ -114,6 +114,7 @@ Public Class Form1
         Dim ipAddressArray As String() = ipAddress.Split(".")
         Dim matchWasFound As Boolean = False
         Dim asnNum As Integer = -1
+        Dim ipRangeString As String = ""
 
         For maskBits As Integer = 0 To 32 Step 1
             If maskBits <= 8 Then
@@ -134,7 +135,7 @@ Public Class Form1
                 ipAddressArray(0) = fourthPrefix.ToString
             End If
 
-            Dim ipRangeString As String = String.Join(".", ipAddressArray) + "/" + (32 - maskBits).ToString()
+            ipRangeString = String.Join(".", ipAddressArray) + "/" + (32 - maskBits).ToString()
 
             If ipRangeToASN.ContainsKey(ipRangeString) Then
                 asnNum = ipRangeToASN.Item(ipRangeString)
@@ -146,7 +147,7 @@ Public Class Form1
         Next
 
         If matchWasFound Then
-            Return asnNum
+            Return asnNum.ToString + " " + ipRangeString
         Else
             Return -1
         End If
@@ -154,10 +155,13 @@ Public Class Form1
     End Function
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Dim ASN As Integer = GetASNumber(TextBox1.Text)
+        Dim ASNIPRange As String = GetASNumber(TextBox1.Text)
+        Dim ASN As Integer = ASNIPRange.Split(" ")(0)
+        Dim Range As String = ASNIPRange.Split(" ")(1)
+
         Dim Owner As String = ASNToOwner.Item(ASN)
 
-        MsgBox(ASN.ToString + " " + Owner)
+        MsgBox(Owner + " with a range of: " + Range + " and an ASN of: " + ASN.ToString)
     End Sub
 
    

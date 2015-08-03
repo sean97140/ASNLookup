@@ -1,4 +1,8 @@
-﻿Imports System.IO
+﻿' Copyright 2015 Sean Mahan
+' Licensed under "GPL 2.0" license
+
+
+Imports System.IO
 
 
 
@@ -6,7 +10,7 @@ Public Class Form1
     Dim ipRangeToASN As New Dictionary(Of String, Integer)
     Dim ASNToOwner As New Dictionary(Of Integer, String)
     Dim OwnerToASNs As New Dictionary(Of String, List(Of Integer))
-    Dim ASNToIPRange As New Dictionary(Of Integer, String)
+    Dim ASNToIPRange As New Dictionary(Of Integer, List(Of String))
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadASNTables()
     End Sub
@@ -45,8 +49,14 @@ Public Class Form1
             asn = ConvertStringToInt(TextLine.Split()(1))
             ipRangeToASN.Add(ipRange, asn)
 
-            If Not ASNToIPRange.ContainsKey(asn) Then
-                ASNToIPRange.Add(asn, ipRange)
+
+            If ASNToIPRange.ContainsKey(asn) Then
+                Dim ipRangeList As List(Of String) = ASNToIPRange.Item(asn)
+                ipRangeList.Add(ipRange)
+            Else
+                Dim ipRangeList As New List(Of String)
+                ipRangeList.Add(ipRange)
+                ASNToIPRange.Add(asn, ipRangeList)
             End If
 
         Loop
@@ -174,7 +184,20 @@ Public Class Form1
 
         For Each i In OtherASNsList
             If ASNToIPRange.ContainsKey(i) Then
-                OtherAsnRangeString += "> <" + i.ToString + " " + ASNToIPRange.Item(i)
+
+                'OtherAsnRangeString += "> <" + i.ToString + " " + 
+
+                Dim ipRangeList As List(Of String) = ASNToIPRange.Item(i)
+
+                For Each s In ipRangeList
+
+                    If s <> Range Then
+                        OtherAsnRangeString += "> <" + i.ToString + " " + s
+                    End If
+
+                Next
+
+
             Else
                 OtherAsnRangeString += "> <" + i.ToString + " missing range"
             End If

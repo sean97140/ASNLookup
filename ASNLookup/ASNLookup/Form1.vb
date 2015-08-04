@@ -3,6 +3,7 @@
 
 
 Imports System.IO
+Imports System.Net
 
 
 
@@ -24,9 +25,6 @@ Public Class Form1
         Dim ipRangeToASNDataFile As String = "data-raw-table.txt"
         Dim ipRangeBinaryReader As BinaryReader
         Dim appData As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-        Dim installPath As String = appData + "\DMCA Preventer"
-
-        'MsgBox(appData + "\" + ipRangeToASNDataFile)
 
         Try
             ipRangeBinaryReader = New BinaryReader(System.IO.File.OpenRead(ipRangeToASNDataFile))
@@ -58,7 +56,6 @@ Public Class Form1
                 ipRangeList.Add(ipRange)
                 ASNToIPRange.Add(asn, ipRangeList)
             End If
-
         Loop
 
         ipRangeDataFileReader.Close()
@@ -126,7 +123,6 @@ Public Class Form1
         'http://www.unixwiz.net/techtips/netmask-ref.html
         'http://quaxio.com/bgp/ much credit deserved for finding this method
 
-
         Dim ipAddressArray As String() = ipAddress.Split(".")
         Dim matchWasFound As Boolean = False
         Dim asnNum As Integer = -1
@@ -170,18 +166,15 @@ Public Class Form1
 
     End Function
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Dim ASNIPRange As String = GetASNumber(TextBox1.Text)
+    Private Sub GetASNButton_Click(sender As Object, e As EventArgs) Handles GetASNButton.Click
+        Dim ASNIPRange As String = GetASNumber(ipAddressInput.Text)
         Dim ASN As Integer = ASNIPRange.Split(" ")(0)
         Dim Range As String = ASNIPRange.Split(" ")(1)
-
         Dim Owner As String = ASNToOwner.Item(ASN)
-
         Dim OtherASNsList As List(Of Integer) = OwnerToASNs.Item(Owner)
-
-        
         Dim OtherAsnRangeString As String = " <"
         Dim msgString As String = Owner + " with a range of: " + Range + " and an ASN of: " + ASN.ToString
+
         If otherASNs.Checked Then
             For Each i In OtherASNsList
                 If ASNToIPRange.ContainsKey(i) Then
@@ -195,11 +188,27 @@ Public Class Form1
                     OtherAsnRangeString += "> <" + i.ToString + " missing range"
                 End If
             Next
+
             OtherAsnRangeString += ">"
             msgString += " with other ASN/Ranges: " + OtherAsnRangeString
         End If
+
         MsgBox(msgString)
     End Sub
+    Private Function GetIPAddress() As String
+        Dim wc As New WebClient
+        Dim ipExternal As String
 
-   
+        Try
+            ipExternal = wc.DownloadString("http://ipv4.icanhazip.com")
+        Catch ex1 As Exception
+            Return "0.0.0.0"
+        End Try
+
+        Return ipExternal
+    End Function
+
+    Private Sub getIPAddressButton_Click(sender As Object, e As EventArgs) Handles getIPAddressButton.Click
+        ipAddressInput.Text = GetIPAddress()
+    End Sub
 End Class

@@ -172,8 +172,10 @@ Public Class Form1
         Dim Range As String = ASNIPRange.Split(" ")(1)
         Dim Owner As String = ASNToOwner.Item(ASN)
         Dim OtherASNsList As List(Of Integer) = OwnerToASNs.Item(Owner)
-        Dim OtherAsnRangeString As String = " <"
+        'Dim OtherAsnRangeString As String = " <"
         Dim msgString As String = Owner + " with a range of: " + Range + " and an ASN of: " + ASN.ToString
+        otherASNList.Items.Clear()
+        otherASNList.Items.Add(ASN.ToString + " " + Range)
 
         If otherASNs.Checked Then
             For Each i In OtherASNsList
@@ -181,16 +183,17 @@ Public Class Form1
                     Dim ipRangeList As List(Of String) = ASNToIPRange.Item(i)
                     For Each s In ipRangeList
                         If s <> Range Then
-                            OtherAsnRangeString += "> <" + i.ToString + " " + s
+                            'OtherAsnRangeString += "> <" + i.ToString + " " + s
+                            otherASNList.Items.Add(i.ToString + " " + s)
                         End If
                     Next
                 Else
-                    OtherAsnRangeString += "> <" + i.ToString + " missing range"
+                    'OtherAsnRangeString += "> <" + i.ToString + " missing range"
                 End If
             Next
 
-            OtherAsnRangeString += ">"
-            msgString += " with other ASN/Ranges: " + OtherAsnRangeString
+            'OtherAsnRangeString += ">"
+            'msgString += " with other ASN/Ranges: " + OtherAsnRangeString
         End If
 
         MsgBox(msgString)

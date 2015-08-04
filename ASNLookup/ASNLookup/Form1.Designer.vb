@@ -30,22 +30,23 @@ Partial Class Form1
         Me.ipAddressInput = New System.Windows.Forms.TextBox()
         Me.otherASNs = New System.Windows.Forms.CheckBox()
         Me.getIPAddressButton = New System.Windows.Forms.Button()
+        Me.otherASNList = New System.Windows.Forms.ListBox()
         Me.SuspendLayout()
         '
-        'Button1
+        'GetASNButton
         '
-        Me.GetASNButton.Location = New System.Drawing.Point(75, 62)
-        Me.GetASNButton.Name = "Button1"
+        Me.GetASNButton.Location = New System.Drawing.Point(120, 61)
+        Me.GetASNButton.Name = "GetASNButton"
         Me.GetASNButton.Size = New System.Drawing.Size(54, 23)
         Me.GetASNButton.TabIndex = 0
         Me.GetASNButton.Text = "Lookup"
         Me.GetASNButton.UseVisualStyleBackColor = True
         '
-        'TextBox1
+        'ipAddressInput
         '
         Me.ipAddressInput.Location = New System.Drawing.Point(12, 12)
-        Me.ipAddressInput.Name = "TextBox1"
-        Me.ipAddressInput.Size = New System.Drawing.Size(117, 20)
+        Me.ipAddressInput.Name = "ipAddressInput"
+        Me.ipAddressInput.Size = New System.Drawing.Size(162, 20)
         Me.ipAddressInput.TabIndex = 1
         '
         'otherASNs
@@ -58,24 +59,34 @@ Partial Class Form1
         Me.otherASNs.Text = "Show other ASN's"
         Me.otherASNs.UseVisualStyleBackColor = True
         '
-        'Button2
+        'getIPAddressButton
         '
         Me.getIPAddressButton.Location = New System.Drawing.Point(12, 61)
-        Me.getIPAddressButton.Name = "Button2"
+        Me.getIPAddressButton.Name = "getIPAddressButton"
         Me.getIPAddressButton.Size = New System.Drawing.Size(57, 24)
         Me.getIPAddressButton.TabIndex = 3
         Me.getIPAddressButton.Text = "My IP"
         Me.getIPAddressButton.UseVisualStyleBackColor = True
         '
+        'otherASNList
+        '
+        Me.otherASNList.FormattingEnabled = True
+        Me.otherASNList.Location = New System.Drawing.Point(12, 98)
+        Me.otherASNList.Name = "otherASNList"
+        Me.otherASNList.Size = New System.Drawing.Size(162, 108)
+        Me.otherASNList.TabIndex = 4
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(143, 93)
+        Me.ClientSize = New System.Drawing.Size(186, 223)
+        Me.Controls.Add(Me.otherASNList)
         Me.Controls.Add(Me.getIPAddressButton)
         Me.Controls.Add(Me.otherASNs)
         Me.Controls.Add(Me.ipAddressInput)
         Me.Controls.Add(Me.GetASNButton)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "Form1"
@@ -90,5 +101,6 @@ Partial Class Form1
     Friend WithEvents ipAddressInput As System.Windows.Forms.TextBox
     Friend WithEvents otherASNs As System.Windows.Forms.CheckBox
     Friend WithEvents getIPAddressButton As System.Windows.Forms.Button
+    Friend WithEvents otherASNList As System.Windows.Forms.ListBox
 
 End Class

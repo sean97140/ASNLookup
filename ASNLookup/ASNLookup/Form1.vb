@@ -181,32 +181,24 @@ Public Class Form1
 
         
         Dim OtherAsnRangeString As String = " <"
-
-        For Each i In OtherASNsList
-            If ASNToIPRange.ContainsKey(i) Then
-
-                'OtherAsnRangeString += "> <" + i.ToString + " " + 
-
-                Dim ipRangeList As List(Of String) = ASNToIPRange.Item(i)
-
-                For Each s In ipRangeList
-
-                    If s <> Range Then
-                        OtherAsnRangeString += "> <" + i.ToString + " " + s
-                    End If
-
-                Next
-
-
-            Else
-                OtherAsnRangeString += "> <" + i.ToString + " missing range"
-            End If
-
-        Next
-
-        OtherAsnRangeString += ">"
-
-        MsgBox(Owner + " with a range of: " + Range + " and an ASN of: " + ASN.ToString + " with other ASN/Ranges: " + OtherAsnRangeString)
+        Dim msgString As String = Owner + " with a range of: " + Range + " and an ASN of: " + ASN.ToString
+        If otherASNs.Checked Then
+            For Each i In OtherASNsList
+                If ASNToIPRange.ContainsKey(i) Then
+                    Dim ipRangeList As List(Of String) = ASNToIPRange.Item(i)
+                    For Each s In ipRangeList
+                        If s <> Range Then
+                            OtherAsnRangeString += "> <" + i.ToString + " " + s
+                        End If
+                    Next
+                Else
+                    OtherAsnRangeString += "> <" + i.ToString + " missing range"
+                End If
+            Next
+            OtherAsnRangeString += ">"
+            msgString += " with other ASN/Ranges: " + OtherAsnRangeString
+        End If
+        MsgBox(msgString)
     End Sub
 
    

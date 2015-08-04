@@ -164,10 +164,37 @@ Public Class Form1
         End If
 
     End Function
+    Private Function ValidateIPInput(ipAddress As String) As Boolean
+        Try
+            Dim ipParts As String() = ipAddress.Split(".")
+            Dim part1 As Integer = Integer.Parse(ipParts(0))
+            Dim part2 As Integer = Integer.Parse(ipParts(1))
+            Dim part3 As Integer = Integer.Parse(ipParts(2))
+            Dim part4 As Integer = Integer.Parse(ipParts(3))
+            If (part1 > 0 And part1 <= 255) And (part2 >= 0 And part2 <= 255) And (part3 >= 0 And part3 <= 255) And (part4 >= 0 And part4 <= 255) Then
+                Return True
+            Else
+                Return False
+            End If
 
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
     Private Sub GetASNButton_Click(sender As Object, e As EventArgs) Handles GetASNButton.Click
+        If Not ValidateIPInput(ipAddressInput.Text) Then
+            MsgBox("IP address invalid, please check and try again")
+            Return
+        End If
+
         Dim ASNIPRange As String = GetASNumber(ipAddressInput.Text)
         Dim ASN As Integer = ASNIPRange.Split(" ")(0)
+
+        If ASN = -1 Then
+            MsgBox("ASN not found for given ip")
+            Return
+        End If
+
         Dim rangeOfGivenIP As String = ASNIPRange.Split(" ")(1)
         Dim ownerOfGivenIP As String = ASNToOwner.Item(ASN)
         Dim listOfOtherASNsForGivenOwner As List(Of Integer) = ownerToASNs.Item(ownerOfGivenIP)
@@ -189,6 +216,7 @@ Public Class Form1
         End If
 
         MsgBox(msgString)
+
     End Sub
     Private Function GetIPAddress() As String
         Dim wc As New WebClient
@@ -205,5 +233,14 @@ Public Class Form1
 
     Private Sub getIPAddressButton_Click(sender As Object, e As EventArgs) Handles getIPAddressButton.Click
         ipAddressInput.Text = GetIPAddress()
+    End Sub
+
+    Private Sub copyToClipboardButton_Click(sender As Object, e As EventArgs) Handles copyToClipboardButton.Click
+        Try
+            Clipboard.SetText(otherASNListbox.SelectedItem.ToString)
+        Catch ex As Exception
+            MsgBox("Please select an ASN/Range from the list")
+        End Try
+
     End Sub
 End Class

@@ -30,7 +30,7 @@ Partial Class Form1
         Me.ipAddressInput = New System.Windows.Forms.TextBox()
         Me.otherASNs = New System.Windows.Forms.CheckBox()
         Me.getIPAddressButton = New System.Windows.Forms.Button()
-        Me.otherASNList = New System.Windows.Forms.ListBox()
+        Me.otherASNListbox = New System.Windows.Forms.ListBox()
         Me.SuspendLayout()
         '
         'GetASNButton
@@ -70,18 +70,18 @@ Partial Class Form1
         '
         'otherASNList
         '
-        Me.otherASNList.FormattingEnabled = True
-        Me.otherASNList.Location = New System.Drawing.Point(12, 98)
-        Me.otherASNList.Name = "otherASNList"
-        Me.otherASNList.Size = New System.Drawing.Size(162, 108)
-        Me.otherASNList.TabIndex = 4
+        Me.otherASNListbox.FormattingEnabled = True
+        Me.otherASNListbox.Location = New System.Drawing.Point(12, 98)
+        Me.otherASNListbox.Name = "otherASNList"
+        Me.otherASNListbox.Size = New System.Drawing.Size(162, 108)
+        Me.otherASNListbox.TabIndex = 4
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(186, 223)
-        Me.Controls.Add(Me.otherASNList)
+        Me.Controls.Add(Me.otherASNListbox)
         Me.Controls.Add(Me.getIPAddressButton)
         Me.Controls.Add(Me.otherASNs)
         Me.Controls.Add(Me.ipAddressInput)
@@ -101,6 +101,6 @@ Partial Class Form1
     Friend WithEvents ipAddressInput As System.Windows.Forms.TextBox
     Friend WithEvents otherASNs As System.Windows.Forms.CheckBox
     Friend WithEvents getIPAddressButton As System.Windows.Forms.Button
-    Friend WithEvents otherASNList As System.Windows.Forms.ListBox
+    Friend WithEvents otherASNListbox As System.Windows.Forms.ListBox
 
 End Class

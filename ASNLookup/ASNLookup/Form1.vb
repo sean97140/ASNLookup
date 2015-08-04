@@ -10,7 +10,7 @@ Imports System.Net
 Public Class Form1
     Dim ipRangeToASN As New Dictionary(Of String, Integer)
     Dim ASNToOwner As New Dictionary(Of Integer, String)
-    Dim OwnerToASNs As New Dictionary(Of String, List(Of Integer))
+    Dim ownerToASNs As New Dictionary(Of String, List(Of Integer))
     Dim ASNToIPRange As New Dictionary(Of Integer, List(Of String))
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadASNTables()
@@ -37,16 +37,15 @@ Public Class Form1
         Dim ipRangeBinaryData As Byte() = ipRangeBinaryReader.ReadBytes(ipRangeBinaryReader.BaseStream.Length)
         Dim ms As MemoryStream = New MemoryStream(ipRangeBinaryData, 0, ipRangeBinaryData.Length)
         Dim ipRangeDataFileReader As New System.IO.StreamReader(ms)
-        Dim TextLine As String = ""
+        Dim textLine As String = ""
         Dim ipRange As String
         Dim asn As Integer = -1
 
         Do While ipRangeDataFileReader.Peek() <> -1
-            TextLine = ipRangeDataFileReader.ReadLine()
-            ipRange = TextLine.Split()(0)
-            asn = ConvertStringToInt(TextLine.Split()(1))
+            textLine = ipRangeDataFileReader.ReadLine()
+            ipRange = textLine.Split()(0)
+            asn = ConvertStringToInt(textLine.Split()(1))
             ipRangeToASN.Add(ipRange, asn)
-
 
             If ASNToIPRange.ContainsKey(asn) Then
                 Dim ipRangeList As List(Of String) = ASNToIPRange.Item(asn)
@@ -64,7 +63,6 @@ Public Class Form1
         Dim ASNToOwnerDataFile As String = "data-used-autnums.txt"
         Dim asnOwnerBinaryReader As BinaryReader
         Dim appData As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-        Dim installPath As String = appData + "\DMCA Preventer"
 
         Try
             asnOwnerBinaryReader = New BinaryReader(System.IO.File.OpenRead(ASNToOwnerDataFile))
@@ -79,18 +77,19 @@ Public Class Form1
         Dim ASNToOwnerDataFileReader As New System.IO.StreamReader(ms2)
         Dim ownerParts As String()
         Dim owner As String = ""
-        Dim TextLine As String = ""
+        Dim textLine As String = ""
         Dim asn As Integer = -1
 
         Do While ASNToOwnerDataFileReader.Peek() <> -1
             owner = ""
-            TextLine = ASNToOwnerDataFileReader.ReadLine().ToString().Trim()
-            ownerParts = TextLine.Split()
+            textLine = ASNToOwnerDataFileReader.ReadLine().ToString().Trim()
+            ownerParts = textLine.Split()
+
             For i As Integer = 1 To ownerParts.Length - 1
                 owner = owner + " " + ownerParts(i)
             Next
 
-            asn = ConvertStringToInt(TextLine.Split()(0))
+            asn = ConvertStringToInt(textLine.Split()(0))
             ASNToOwner.Add(asn, owner.Trim())
         Loop
 
@@ -99,14 +98,14 @@ Public Class Form1
 
     Private Sub BuildOwnerToASNsTable()
         For Each i As Integer In ASNToOwner.Keys()
-            Dim owner1 As String = ASNToOwner.Item(i)
-            If OwnerToASNs.ContainsKey(owner1) Then
-                Dim asnList As List(Of Integer) = OwnerToASNs.Item(owner1)
+            Dim owner As String = ASNToOwner.Item(i)
+            If ownerToASNs.ContainsKey(owner) Then
+                Dim asnList As List(Of Integer) = ownerToASNs.Item(owner)
                 asnList.Add(i)
             Else
                 Dim asnList As New List(Of Integer)
                 asnList.Add(i)
-                OwnerToASNs.Add(owner1, asnList)
+                ownerToASNs.Add(owner, asnList)
             End If
         Next
 
@@ -169,31 +168,24 @@ Public Class Form1
     Private Sub GetASNButton_Click(sender As Object, e As EventArgs) Handles GetASNButton.Click
         Dim ASNIPRange As String = GetASNumber(ipAddressInput.Text)
         Dim ASN As Integer = ASNIPRange.Split(" ")(0)
-        Dim Range As String = ASNIPRange.Split(" ")(1)
-        Dim Owner As String = ASNToOwner.Item(ASN)
-        Dim OtherASNsList As List(Of Integer) = OwnerToASNs.Item(Owner)
-        'Dim OtherAsnRangeString As String = " <"
-        Dim msgString As String = Owner + " with a range of: " + Range + " and an ASN of: " + ASN.ToString
-        otherASNList.Items.Clear()
-        otherASNList.Items.Add(ASN.ToString + " " + Range)
+        Dim rangeOfGivenIP As String = ASNIPRange.Split(" ")(1)
+        Dim ownerOfGivenIP As String = ASNToOwner.Item(ASN)
+        Dim listOfOtherASNsForGivenOwner As List(Of Integer) = ownerToASNs.Item(ownerOfGivenIP)
+        Dim msgString As String = ownerOfGivenIP + " with a range of: " + rangeOfGivenIP + " and an ASN of: " + ASN.ToString
+        otherASNListbox.Items.Clear()
+        otherASNListbox.Items.Add(ASN.ToString + " " + rangeOfGivenIP)
 
         If otherASNs.Checked Then
-            For Each i In OtherASNsList
+            For Each i In listOfOtherASNsForGivenOwner
                 If ASNToIPRange.ContainsKey(i) Then
                     Dim ipRangeList As List(Of String) = ASNToIPRange.Item(i)
                     For Each s In ipRangeList
-                        If s <> Range Then
-                            'OtherAsnRangeString += "> <" + i.ToString + " " + s
-                            otherASNList.Items.Add(i.ToString + " " + s)
+                        If s <> rangeOfGivenIP Then
+                            otherASNListbox.Items.Add(i.ToString + " " + s)
                         End If
                     Next
-                Else
-                    'OtherAsnRangeString += "> <" + i.ToString + " missing range"
                 End If
             Next
-
-            'OtherAsnRangeString += ">"
-            'msgString += " with other ASN/Ranges: " + OtherAsnRangeString
         End If
 
         MsgBox(msgString)

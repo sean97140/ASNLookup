@@ -215,7 +215,8 @@ Public Class Form1
             Next
         End If
 
-        MsgBox(msgString)
+        Clipboard.SetText(ownerOfGivenIP + " " + ASN.ToString + " " + rangeOfGivenIP)
+        MsgBox(msgString + "    *copied to clipbaord*")
 
     End Sub
     Private Function GetIPAddress() As String

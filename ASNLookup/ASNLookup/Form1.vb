@@ -1,11 +1,22 @@
 ﻿' Copyright 2015 Sean Mahan
 ' Licensed under "GPL 2.0" license
 
+'    This program is free software: you can redistribute it and/or modify
+'    it under the terms of the GNU General Public License as published by
+'    the Free Software Foundation, either version 3 of the License, or
+'    (at your option) any later version.'
+'
+'    This program is distributed in the hope that it will be useful,
+'    but WITHOUT ANY WARRANTY; without even the implied warranty of
+'    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'    GNU General Public License for more details.
+
+'    You should have received a copy of the GNU General Public License
+'    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 Imports System.IO
 Imports System.Net
-
-
 
 Public Class Form1
     Dim ipRangeToASN As New Dictionary(Of String, Integer)
@@ -127,6 +138,10 @@ Public Class Form1
         Dim asnNum As Integer = -1
         Dim ipRangeString As String = ""
 
+        ' In this section we are essentially using bit shifting to truncate each portion of the ip address in stages
+        ' so x.x.x.33 for maskBits = 1 would be 33 >> 1 which would be 16 then << 1 which would be 32. Then a calculation
+        ' is done to find the ip string and then check the dictionary for a match. so this ip range would be x.x.x.32/31
+        ' if this is found, the loop is stopped, otherwise it continues with a higher mask bit, working it way up the ip range.
         For maskBits As Integer = 0 To 32 Step 1
             If maskBits <= 8 Then
                 Dim firstPrefix As Integer = ConvertStringToInt(ipAddressArray(3))
@@ -176,7 +191,6 @@ Public Class Form1
             Else
                 Return False
             End If
-
         Catch ex As Exception
             Return False
         End Try
@@ -199,6 +213,7 @@ Public Class Form1
         Dim ownerOfGivenIP As String = ASNToOwner.Item(ASN)
         Dim listOfOtherASNsForGivenOwner As List(Of Integer) = ownerToASNs.Item(ownerOfGivenIP)
         Dim msgString As String = ownerOfGivenIP + " with a range of: " + rangeOfGivenIP + " and an ASN of: " + ASN.ToString
+
         otherASNListbox.Items.Clear()
         otherASNListbox.Items.Add(ASN.ToString + " " + rangeOfGivenIP)
 
@@ -216,7 +231,7 @@ Public Class Form1
         End If
 
         Clipboard.SetText(ownerOfGivenIP + " " + ASN.ToString + " " + rangeOfGivenIP)
-        MsgBox(msgString + "    *copied to clipbaord*")
+        MsgBox(msgString + "    *copied to clipboard*")
 
     End Sub
     Private Function GetIPAddress() As String
@@ -242,6 +257,5 @@ Public Class Form1
         Catch ex As Exception
             MsgBox("Please select an ASN/Range from the list")
         End Try
-
     End Sub
 End Class
